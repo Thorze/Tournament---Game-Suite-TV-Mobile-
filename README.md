@@ -135,24 +135,6 @@ Chaque jeu est implémenté de manière autonome dans son propre package sous `c
 
 ---
 
-## 🛠️ Configuration et Compilation
-
-### Prérequis
-*   **Android SDK (API 29+)** installé sur votre machine.
-*   Un réseau Wi-Fi local reliant la TV (ou l'émulateur) et les téléphones.
-
-### Compilation
-Pour compiler et générer les fichiers APK de debug pour la TV et les téléphones, exécutez à la racine :
-
-```powershell
-./gradlew assembleDebug
-```
-
-Les fichiers APK se trouvent dans :
-*   TV : `tv/build/outputs/apk/debug/tv-debug.apk`
-*   Mobile : `mobile/build/outputs/apk/debug/mobile-debug.apk`
-
----
 
 ## 🎮 Comment Jouer
 
