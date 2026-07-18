@@ -137,48 +137,6 @@ L'application intègre seize types de party games distincts, sélectionnables de
 
 ---
 
-## 🏗️ Architecture du Projet
-
-Le projet est divisé en deux modules Android natifs structurés selon une architecture modulaire découplée (1 dossier = 1 jeu) :
-
-### 📂 Structure Modulaire Commune
-Chaque jeu est implémenté de manière autonome dans son propre package sous `com.ticonetv.tournament.games.<jeu>` :
-*   **Logique TV (`*Game.kt`)** : Implémente `GameModule` (pour gérer l'état initial, les messages réseau et les ticks du jeu) et `TvGameRenderer` (pour le rendu sur l'écran TV).
-*   **Logique Mobile (`*Mobile.kt`)** : Implémente `MobileGameRenderer` (pour rendre l'interface tactile sur les smartphones des joueurs).
-*   **Enregistrement dynamique** : Les modules s'enregistrent dynamiquement auprès de `GameRegistry` (sur la TV) et de `MobileGameRegistry` (sur le mobile), permettant d'ajouter ou d'enlever des jeux simplement sans modifier le cœur de l'application.
-
-### 📺 Module `:tv` (Host)
-*   Démarre un serveur WebSocket local (port `8080`) pour gérer les messages temps réel.
-*   Gère le moteur général de salon (`GameViewModel`), le serveur Web pour les télécommandes, les scores globaux et les bruitages de fond (`lobby` et `countdown`).
-*   Affiche l'écran TV partagé et délègue le rendu du jeu actif au module sélectionné.
-
-### 📱 Module `:mobile` (Remote)
-*   Se connecte au serveur WebSocket de la TV via l'IP locale.
-*   Affiche l'ardoise de dessin tactile, les pavés numériques (Numpad) ou les grilles de choix selon le jeu actif reçu via l'état `MODULAR_PLAY` délégué au module mobile correspondant.
-*   Sert également une version Web de la télécommande sur le port `8081` (`controller.html`) pour permettre de jouer depuis n'importe quel appareil connecté au Wi-Fi.
-
----
-
-## 🛠️ Configuration et Compilation
-
-### Prérequis
-*   **Android SDK** installé sur votre machine.
-*   Appareils compatibles : les deux modules ciblent **Android 8.0 (API 26) minimum**. L'app TV s'installe donc aussi bien sur les box Android TV (Freebox Pop, etc.) que sur les **Fire TV** sous Fire OS 7 (Android 9 / API 28). *(Si un Fire TV affiche « version d'Android non prise en charge », c'est que son API est inférieure au `minSdk` : vérifiez le modèle.)*
-*   Un réseau Wi-Fi local reliant la TV (ou l'émulateur) et les téléphones.
-
-### Compilation
-Pour compiler et générer les fichiers APK de debug pour la TV et les téléphones, exécutez à la racine :
-
-```powershell
-./gradlew assembleDebug
-```
-
-Les fichiers APK se trouvent dans :
-*   TV : `tv/build/outputs/apk/debug/tv-debug.apk`
-*   Mobile : `mobile/build/outputs/apk/debug/mobile-debug.apk`
-
----
-
 ## 🎮 Comment Jouer
 
 1.  **Configurer la Partie sur la TV** :
