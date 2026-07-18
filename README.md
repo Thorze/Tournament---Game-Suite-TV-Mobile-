@@ -6,7 +6,7 @@ Une application de party games multijoueur local en temps réel où l'**Android 
 
 ## 🌟 Modes de Jeu Disponibles
 
-L'application intègre douze types de party games distincts, sélectionnables depuis l'écran de démarrage :
+L'application intègre seize types de party games distincts, sélectionnables depuis l'écran de démarrage :
 
 ### 1. 📝 **Question Tournament (Quiz de rapidité)**
 *   **Description** : Répondez à des questions de culture générale le plus rapidement possible. Tout le monde répond en même temps sur son smartphone.
@@ -76,8 +76,10 @@ L'application intègre douze types de party games distincts, sélectionnables de
 *   **Mécanique tactile modernisée** : Les segments où les raquettes des joueurs se chevauchent deviennent des zones "fantômes" non solides (les balles passent au travers) et font vibrer les smartphones des joueurs concernés pour encourager la coordination spatiale.
 
 ### 10. 🐍 **Snack Attack (Arcade Snake & Sabotage)**
-*   **Description** : Un jeu de type Snake / Tron multijoueur sur la TV où le but est de survivre et forcer les autres serpents à percuter votre corps.
-*   **Mode Sabotage smartphone** : Les joueurs éliminés sur la TV ne s'ennuient pas ! Leurs smartphones se transforment en lanceurs de malus pour saboter la partie en cours (faire apparaître des murs de briques, inverser les commandes d'un joueur vivant, ou accélérer brutalement la vitesse globale).
+*   **Description** : Un jeu de type Snake / Tron multijoueur sur la TV où le but est de survivre et forcer les autres serpents à percuter votre corps. Compte à rebours "3, 2, 1, GO !" au départ, rendu fluide interpolé (mouvement continu, yeux orientés, particules, secousses d'écran pendant le séisme) et bruitages arcade (miam, power-up, cri d'élimination).
+*   **Contrôles** : Joystick virtuel sur smartphone et navigateur (glisser dans la direction voulue, retour haptique à chaque changement de direction).
+*   **Bonus sur la grille** : 🍎 Pomme (+10, grandit), ⭐ Fruit doré (+50, grandit ×2, disparaît si on tarde), 🛡️ Bouclier (+10, invincible + traverse les murs quelques secondes), ⚡ Turbo (+10, vitesse double personnelle), 🧪 Potion rétrécissante (+15 et raccourcit le serpent). Chaque joueur a son propre score, crédité au classement en fin de manche (+50 pour le survivant).
+*   **Mode Sabotage smartphone** : Les joueurs éliminés sur la TV ne s'ennuient pas ! Leurs smartphones se transforment en lanceurs de malus pour saboter la partie en cours (faire apparaître des murs de briques, inverser les commandes d'un joueur vivant, accélérer brutalement la vitesse globale, ou mélanger la position des fruits).
 
 ### 11. 📳 **Vibro-Synchro (Rythme Haptique Coopératif)**
 *   **Description** : Un jeu de synchronisation collective basé sur les vibrations des smartphones. La TV affiche un pulsar visuel qui bat la mesure ; chaque téléphone vibre avec un décalage aléatoire au départ.
@@ -93,6 +95,28 @@ L'application intègre douze types de party games distincts, sélectionnables de
 *   **Scoring** :
     *   Voter correctement pour l'imposteur : **+1 000 points**.
     *   L'imposteur non démasqué (pas majoritaire au vote) : **+1 500 points**.
+
+### 13. 🎤 **Punchline Battle (Humour & Duels de Votes)**
+*   **Description** : Chaque joueur reçoit un thème et écrit la meilleure vanne possible sur son téléphone, puis la salle vote lors de duels en tête-à-tête.
+*   **Déroulement** :
+    *   **Écriture** : Un appariement circulaire fait que chaque joueur participe à exactement deux duels et rédige donc deux punchlines.
+    *   **Vote** : La TV affiche les duels un par un (auteur A vs auteur B, anonymisés). Les joueurs non concernés votent pour la punchline la plus drôle.
+*   **Scoring** : Des points sont attribués selon les votes reçus par chaque punchline dans son duel.
+
+### 14. ☠️ **Quiz Mortel (Quiz de Survie & Épreuves)**
+*   **Description** : Un quiz de culture générale à élimination : répondre juste vous garde en vie, une mauvaise réponse vous envoie dans une épreuve de la "salle des supplices".
+*   **Épreuves de danger** : les joueurs ayant échoué à la question passent au hasard par la *Roulette* (choisir une case non piégée), le *Matraquage* (marteler un bouton) ou le *Calcul* (résoudre une opération en QCM) — échouer élimine le joueur.
+*   **Objectif** : être le dernier survivant / accumuler le plus de bonnes réponses.
+
+### 15. 🚀 **Panique en Cabine (Coopératif sous Pression)**
+*   **Description** : Un jeu coopératif de coordination effrénée façon "salle des machines". Chaque joueur dispose d'un panneau de contrôle unique (boutons, interrupteurs et curseurs aux noms loufoques comme « Turbo-cornichon »).
+*   **Déroulement** : La TV donne à chaque joueur une consigne qui concerne… la commande d'un **autre** joueur. Il faut donc crier les instructions à voix haute pour que le bon coéquipier actionne la bonne commande avant la fin du compte à rebours.
+*   **Enjeu collectif** : Chaque consigne ratée endommage la coque du vaisseau (jauge d'intégrité commune). Tenez le plus longtemps possible et faites grimper le score d'équipe.
+
+### 16. 📊 **Sondage Piège (Estimation & Paris)**
+*   **Description** : Un jeu de pari basé sur des statistiques surprenantes. À chaque manche, un joueur actif estime la réponse chiffrée (souvent un pourcentage) à une question de sondage.
+*   **Déroulement** : Une fois l'estimation posée, les autres joueurs parient sur leur téléphone : la vraie valeur est-elle **plus haute** ou **plus basse** que l'estimation ? Chaque joueur passe à tour de rôle dans le rôle de l'estimateur.
+*   **Scoring** : Points aux joueurs ayant correctement parié plus haut / plus bas par rapport à la vraie réponse.
 
 ---
 
@@ -135,6 +159,25 @@ Chaque jeu est implémenté de manière autonome dans son propre package sous `c
 
 ---
 
+## 🛠️ Configuration et Compilation
+
+### Prérequis
+*   **Android SDK** installé sur votre machine.
+*   Appareils compatibles : les deux modules ciblent **Android 8.0 (API 26) minimum**. L'app TV s'installe donc aussi bien sur les box Android TV (Freebox Pop, etc.) que sur les **Fire TV** sous Fire OS 7 (Android 9 / API 28). *(Si un Fire TV affiche « version d'Android non prise en charge », c'est que son API est inférieure au `minSdk` : vérifiez le modèle.)*
+*   Un réseau Wi-Fi local reliant la TV (ou l'émulateur) et les téléphones.
+
+### Compilation
+Pour compiler et générer les fichiers APK de debug pour la TV et les téléphones, exécutez à la racine :
+
+```powershell
+./gradlew assembleDebug
+```
+
+Les fichiers APK se trouvent dans :
+*   TV : `tv/build/outputs/apk/debug/tv-debug.apk`
+*   Mobile : `mobile/build/outputs/apk/debug/mobile-debug.apk`
+
+---
 
 ## 🎮 Comment Jouer
 
