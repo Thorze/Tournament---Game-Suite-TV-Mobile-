@@ -123,19 +123,49 @@ L'application intègre seize types de party games distincts, sélectionnables de
 ## 🎨 Fonctionnalités & Expérience Utilisateur
 
 *   **Zéro configuration Cloud** : Fonctionne entièrement sur votre réseau Wi-Fi local grâce à un protocole WebSocket ultra-rapide.
+*   **Reconnexion automatique** : Un joueur qui perd le Wi-Fi ou met son téléphone en veille reste dans la partie (score conservé) pendant 30 secondes le temps de revenir ; l'app mobile et la télécommande web retentent la connexion automatiquement (backoff 1→5 s) au lieu de renvoyer à l'écran de connexion.
+*   **Écran "Comment jouer"** : Au lancement de chaque jeu, la TV affiche 7 secondes de règles résumées (3 puces + mascotte) avant la manche 1, pour que les nouveaux joueurs ne perdent pas la première manche par méconnaissance des règles.
+*   **Identité visuelle par jeu** : Chaque jeu a sa couleur d'accent (menu TV, écran de règles, contrôleur mobile et navigateur), pour une reconnaissance immédiate du jeu en cours sur tous les écrans.
+*   **Transitions animées** : Tout changement d'écran sur la TV (sélection, salon, jeu, fin de partie) se fait en fondu-glissement plutôt qu'en cut sec.
+*   **Cérémonie de podium** : L'écran de fin de partie révèle le classement en 3 temps (3ᵉ place, 2ᵉ place, roulement de tambour puis 1ᵉʳ) avec pluie de confettis, plutôt qu'un classement affiché d'un coup.
 *   **Ressources Sonores Double Canal** :
     *   *Menu & Lobby* : Musique relaxante et chaleureuse (`lobby.mp3`) en fond sonore lors de la sélection des jeux et dans le salon d'attente.
     *   *Chronos Actifs* : Bande-son tendue et rythmée (`countdown.mp3`) jouée sur tous les comptes à rebours de jeu.
-*   **Mascotte Interactive & Dynamique** : Une mascotte animée sur TV réagit aux événements du jeu (devient K.O. lorsqu'il reste 5 secondes ou moins au chrono, exulte lors des révélations).
+*   **Réglages audio** : Volumes musique et bruitages réglables séparément (0-100 %) depuis un écran dédié sur la TV, persistés entre les sessions.
+*   **Mascotte Interactive & Dynamique** : Une mascotte animée sur TV réagit aux événements du jeu (devient K.O. lorsqu'il reste 5 secondes ou moins au chrono, exulte lors des révélations, présente les règles et le podium).
 *   **Sécurité Navigation Télécommande TV** : Appuyer sur la touche Retour ou Échap de la télécommande TV dans le salon d'attente (`LOBBY`), la sélection de questions (`SETUP_COUNT`) ou l'écran final (`GAME_OVER`) renvoie proprement à la sélection des jeux au lieu de fermer brutalement l'application.
 *   **Ardoise Tactile fluide** : Intégration d'un Canvas de dessin tactile plein écran avec boutons "Effacer" et "Envoyer" sur mobile. Les dessins sont compressés et transférés instantanément par Base64 (environ 20 Ko).
 *   **Anti-Cheat (Écrans de Verrouillage)** : Dès qu'une réponse ou un vote est soumis sur le smartphone, l'interface de choix est instantanément masquée et remplacée par un écran de chargement discret. Les réponses et options ne sont plus visibles, éliminant tout risque de triche ou de copie entre joueurs dans la même pièce.
-*   **Configuration TV D-Pad intuitive** : Sélection des jeux et du nombre de questions via la télécommande de la TV avec focus visuels cyan/verts et contours de sélection blancs épais.
+*   **Configuration TV D-Pad intuitive** : Sélection des jeux et du nombre de questions via la télécommande de la TV avec focus visuels cyan/verts et contours de sélection blancs épais, tuiles agrandies et surlignées par la couleur du jeu au focus.
 *   **Boucle de Rejouabilité Fluide** :
     *   **Depuis la TV** : Bouton `[Recommencer la partie]` pour relancer directement avec les mêmes joueurs.
     *   **Depuis les Téléphones** : Bouton `[Prêt à rejouer !]` pour redémarrer automatiquement dès que tous les joueurs se sont déclarés prêts.
+*   **Contenu enrichi** : Les banques de contenu des jeux les plus légers (Le Double Jeu, Sondage Piège, Brain Link, Punchline Battle, Esquisse Masquée) ont été considérablement étoffées pour limiter les répétitions d'une partie à l'autre.
 
 ---
+
+## 🏗️ Architecture du Projet
+
+Le projet est divisé en deux modules Android natifs structurés selon une architecture modulaire découplée (1 dossier = 1 jeu) :
+
+### 📂 Structure Modulaire Commune
+Chaque jeu est implémenté de manière autonome dans son propre package sous `com.ticonetv.tournament.games.<jeu>` :
+*   **Logique TV (`*Game.kt`)** : Implémente `GameModule` (pour gérer l'état initial, les messages réseau et les ticks du jeu) et `TvGameRenderer` (pour le rendu sur l'écran TV).
+*   **Logique Mobile (`*Mobile.kt`)** : Implémente `MobileGameRenderer` (pour rendre l'interface tactile sur les smartphones des joueurs).
+*   **Enregistrement dynamique** : Les modules s'enregistrent dynamiquement auprès de `GameRegistry` (sur la TV) et de `MobileGameRegistry` (sur le mobile), permettant d'ajouter ou d'enlever des jeux simplement sans modifier le cœur de l'application.
+
+### 📺 Module `:tv` (Host)
+*   Démarre un serveur WebSocket local (port `8080`) pour gérer les messages temps réel.
+*   Gère le moteur général de salon (`GameViewModel`), le serveur Web pour les télécommandes, les scores globaux et les bruitages de fond (`lobby` et `countdown`).
+*   Affiche l'écran TV partagé et délègue le rendu du jeu actif au module sélectionné.
+
+### 📱 Module `:mobile` (Remote)
+*   Se connecte au serveur WebSocket de la TV via l'IP locale.
+*   Affiche l'ardoise de dessin tactile, les pavés numériques (Numpad) ou les grilles de choix selon le jeu actif reçu via l'état `MODULAR_PLAY` délégué au module mobile correspondant.
+*   Sert également une version Web de la télécommande sur le port `8081` (`controller.html`) pour permettre de jouer depuis n'importe quel appareil connecté au Wi-Fi.
+
+---
+
 
 ## 🎮 Comment Jouer
 
